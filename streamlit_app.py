@@ -1,0 +1,235 @@
+import pandas as pd
+import semantha_sdk
+import semanthaAuth
+import streamlit as st
+import json
+import requests
+import numpy as np
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+from io import BytesIO
+import streamlit.components.v1 as components
+from st_custom_components import st_audiorec
+import cv2 as cv
+from PIL import Image
+import io
+import os
+from streamlit_webrtc import webrtc_streamer
+import aiortc
+import speech_recognition as sr
+import aspose.pdf as ap
+
+
+server = 'local'
+domain = 'AI_Festival'
+
+semantha = semantha_sdk.login(semanthaAuth.server_url[server], semanthaAuth.sdk_auth[server])
+
+
+@st.cache_data(show_spinner="Finding your perfect job")
+def get_matches(file):
+    matches_list = {
+        "job_title": [],
+        "score": [],
+        "documentId": []
+    }
+    matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
+    #st.write(matrix_response)
+    for reference in matrix_response[0].references:
+        matches_list['job_title'].append(reference.document_name)
+        matches_list['score'].append(reference.similarity)
+        matches_list['documentId'].append(reference.document_id)
+    #st.write(matches_list)
+    data = pd.DataFrame(matches_list)
+    data.sort_values(by='score', inplace=True, ascending=False)
+    data['url'] = [None] * len(data['job_title'])
+    data['salary'] = [None] * len(data['job_title'])
+    data['location'] = [None] * len(data['job_title'])
+    if file == 0:
+        return 0
+    else:
+        return data
+
+
+def get_job_metadata(data):
+    document = semantha.domains(domain).referencedocuments.get(documentids=data[2], limit=1, offset=0).data[0]
+    metadata = document.metadata
+    if metadata is not None:
+        metadata = json.loads(metadata)
+        data[3] = metadata["url"]
+        data[4] = metadata["salary"]
+        data[5] = metadata["location"]
+    return data
+
+
+def get_video(string):
+    input_file = io.BytesIO(string.encode('utf-8'))
+    input_file.name = 'input.txt'
+    references = semantha.domains(domain).references.post(file=input_file, similaritythreshold=0.01, tags='', maxreferences=1, mode='fingerprint')
+    #st.write(references)
+    if references.references is not None:
+        reference_id = references.references[0].document_id
+        referencedocuments_response = semantha.domains(domain).referencedocuments.get(documentids=reference_id, limit=1, offset=0).data[0]
+        #st.write(referencedocuments_response)
+        text = referencedocuments_response.content
+        metadata = referencedocuments_response.metadata
+        if metadata is not None:
+            #st.write(metadata)
+            metadata = json.loads(metadata)
+            video_url = metadata["url"]
+            start_time = round(metadata["start"]/1000)
+            return video_url, start_time, text
+        else:
+            return 0
+    else:
+        return 0
+
+
+st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
+
+# define session states
+if 'bumblebee_search' not in st.session_state:
+    st.session_state['bumblebee_search'] = None
+if 'cv_input_format' not in st.session_state:
+    st.session_state['cv_input_format'] = None
+if 'cv_compare' not in st.session_state:
+    st.session_state['cv_compare'] = None
+if 'cv_all_results' not in st.session_state:
+    st.session_state['cv_all_results'] = None
+
+bumblebee, cv = st.tabs([":bee: Bumblebee", ":page_with_curl: CV Matching"])
+with bumblebee:
+    st.title("semantha Bumblebee")
+    st.markdown('***')
+    st.write('Enter a sentence and semantha will search her music library for a line from a song that has similar meaning!')
+    st.markdown('***')
+    user_input = st.text_input("Search:")
+    if user_input != '':
+        example = st.selectbox("Or use an example:", ("Es ist sehr heiß hier!", "Where is the party at?"), disabled=True)
+    else:
+        example = st.selectbox("Or use an example:", ("Es ist sehr heiß hier!", "Where is the party at?"))
+    if user_input != '':
+        search_text = user_input
+    else:
+        search_text = example
+    search = st.button("Search")
+    if search:
+        st.session_state['bumblebee_search'] = True
+    if st.session_state['bumblebee_search'] and search_text is not None:
+        st.markdown('***')
+        video_url = get_video(search_text)
+        if video_url == 0:
+            st.write("No matches found")
+        else:
+            st.write("semantha has found the line")
+            col1, col2 = st.columns((1, 10))
+            with col2:
+                st.markdown(f'<span style="font-style:italic;">...{video_url[2]}...</span>', unsafe_allow_html=True)
+            st.write("and here it is on youtube:")
+            st.video(video_url[0], start_time=video_url[1])
+
+with cv:
+    st.title("Job search with semantha")
+    st.markdown('***')
+    st.write('semantha will find the perfect job for you by using AI to read and understand your CV.')
+    st.write('Don\'t have a CV with you? Simply record a message or take a video describing what you\'re good at and '
+             'semantha will use that!')
+    st.markdown('***')
+
+    #collect input
+
+    st.title('Input')
+    col1, col2, col3 = st.columns((1, 1, 1))
+    with col1:
+        cv_input = st.button('Upload your CV')
+        if cv_input:
+            st.session_state['cv_input_format'] = 'cv'
+    with col2:
+        audio_input = st.button('Record audio')
+        if audio_input:
+            st.session_state['cv_input_format'] = 'audio'
+    with col3:
+        video_input = st.button('Take a video')
+        if video_input:
+            st.session_state['cv_input_format'] = 'video'
+
+    if st.session_state['cv_input_format'] == 'cv':
+        file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
+    if st.session_state['cv_input_format'] == 'audio':
+        st.session_state['cv_compare'] = None
+        audio_wav = st_audiorec()
+        if audio_wav is not None:
+            with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
+                f.write(audio_wav)
+            r = sr.Recognizer()
+            audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
+            with audio as source:
+                audio = r.record(source)
+                file_text = r.recognize_google(audio, language="de-DE")
+                st.write(file_text)
+            file_pdf = ap.Document()
+            page = file_pdf.pages.add()
+            page.paragraphs.add(ap.text.TextFragment(file_text))
+            file_pdf.save(os.path.join(os.path.dirname(__file__), "application.pdf"))
+        file = open(os.path.join(os.path.dirname(__file__), "application.pdf"), 'rb')
+    if st.session_state['cv_input_format'] == 'video':
+        webrtc_streamer(key="key")
+        player = aiortc.Media
+
+    if st.session_state['cv_input_format'] is not None:
+        compare = st.button('Compare')
+        if compare:
+            st.session_state['cv_compare'] = compare
+
+    if st.session_state['cv_compare'] and file is not None:
+        st.markdown('***')
+        data = get_matches(file)
+        st.title('Your top 3 positions:')
+        medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
+        for i in range(0, 3):
+            col1, col2 = st.columns((1, 10))
+            data.iloc[i] = get_job_metadata(data.iloc[i])
+            with col1:
+                st.markdown(f'<span style="font-size:50px;">{medals[i]}</span>', unsafe_allow_html=True)
+            with col2:
+                st.markdown(f'<span style="font-size:35px;">{data.iloc[i, 0]}</span>', unsafe_allow_html=True)
+                col2_1, col2_2, col2_3 = st.columns((1, 1, 1))
+                with col2_1:
+                    st.markdown(f'<span style="font-size:15px;">Salary: {data.iloc[i, 4]}</span>', unsafe_allow_html=True)
+                with col2_2:
+                    st.markdown(f'<span style="font-size:15px;">Location: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
+                with col2_3:
+                    st.markdown(f'<span style="font-size:15px;">[Go to job :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
+
+        cv_all_results = st.button('Load all positions')
+        if cv_all_results:
+            st.session_state['cv_all_results'] = cv_all_results
+
+        if st.session_state['cv_all_results']:
+            for i in range(3, len(data)):
+                data.iloc[i] = get_job_metadata(data.iloc[i])
+            display_data = data[['score', 'job_title', 'salary', 'location', 'url']]
+            gb = GridOptionsBuilder.from_dataframe(display_data)
+            gb.configure_default_column(filterable=True)
+            gb.configure_pagination(paginationAutoPageSize=True, paginationPageSize=10)
+            gb.configure_column("score", header_name='Score', sortable=True, width=75)
+            gb.configure_column("job_title", header_name='Job Title', flex=1)
+            gb.configure_column("salary", header_name='Salary', sortable=True, width=80)
+            gb.configure_column("location", header_name='Location', filter=True, width=100)
+            gb.configure_column("url", header_name='URL', width=100)
+            gridOptions = gb.build()
+
+            grid_response = AgGrid(
+                display_data,
+                gridOptions=gridOptions,
+                data_return_mode='AS_INPUT',
+                update_mode='MODEL_CHANGED',
+                fit_columns_on_grid_load=False,
+                enable_enterprise_modules=True,
+                height=350,
+                width='100%',
+                reload_data=True
+            )
+
+            data = grid_response['data']
+            selected = grid_response['selected_rows']
+            data = pd.DataFrame(selected)
