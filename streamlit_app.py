@@ -2,13 +2,8 @@ import pandas as pd
 import semantha_sdk
 import streamlit as st
 import json
-import requests
-import numpy as np
 from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
-from io import BytesIO
-import streamlit.components.v1 as components
 from st_custom_components import st_audiorec
-import cv2 as cv
 from PIL import Image
 import io
 import os
