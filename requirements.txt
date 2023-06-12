@@ -6,3 +6,4 @@ streamlit_webrtc==0.45.0
 aiortc==1.5.0
 aspose.pdf==23.5.0
 opencv-python==4.7.0.72
+SpeechRecognition==3.10.0
