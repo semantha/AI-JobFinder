@@ -18,11 +18,9 @@ import aiortc
 import speech_recognition as sr
 import aspose.pdf as ap
 
+domain = st.secrests.semantha.domain
 
-server = 'local'
-domain = 'AI_Festival'
-
-semantha = semantha_sdk.login(semanthaAuth.server_url[server], semanthaAuth.sdk_auth[server])
+semantha = semantha_sdk.login(st.secrets.semantha.server_url, st.secrets.semantha.api_key)
 
 
 @st.cache_data(show_spinner="Finding your perfect job")
