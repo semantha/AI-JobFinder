@@ -1,6 +1,5 @@
 import pandas as pd
 import semantha_sdk
-import semanthaAuth
 import streamlit as st
 import json
 import requests
@@ -18,7 +17,7 @@ import aiortc
 import speech_recognition as sr
 import aspose.pdf as ap
 
-domain = st.secrests.semantha.domain
+domain = st.secrets.semantha.domain
 
 semantha = semantha_sdk.login(st.secrets.semantha.server_url, st.secrets.semantha.api_key)
 
