@@ -30,7 +30,7 @@ def get_matches(file):
         matches_list['job_title'].append(reference.document_name)
         matches_list['score'].append(reference.similarity)
         matches_list['documentId'].append(reference.document_id)
-    #st.write(matches_list)
+    st.write(matches_list)
     data = pd.DataFrame(matches_list)
     data.sort_values(by='score', inplace=True, ascending=False)
     data['url'] = [None] * len(data['job_title'])
