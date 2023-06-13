@@ -10,7 +10,6 @@ import os
 from streamlit_webrtc import webrtc_streamer
 import aiortc
 import speech_recognition as sr
-import aspose.pdf as ap
 
 domain = st.secrets.semantha.domain
 
@@ -24,13 +23,18 @@ def get_matches(file):
         "score": [],
         "documentId": []
     }
-    matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
+    if isinstance(file, str):
+        text_id = semantha.domains(domain).referencedocuments.post(tags='Applicant', text=file)[0].id
+        matrix_response = semantha.domains(domain).similaritymatrix.post(sourcedocumentids=text_id, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
+        semantha.domains(domain).referencedocuments(documentid=text_id).delete()
+    else:
+        matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
     #st.write(matrix_response)
     for reference in matrix_response[0].references:
         matches_list['job_title'].append(reference.document_name)
         matches_list['score'].append(reference.similarity)
         matches_list['documentId'].append(reference.document_id)
-    st.write(matches_list)
+    #st.write(matches_list)
     data = pd.DataFrame(matches_list)
     data.sort_values(by='score', inplace=True, ascending=False)
     data['url'] = [None] * len(data['job_title'])
@@ -60,9 +64,9 @@ def get_video(string):
     #st.write(references)
     if references.references is not None:
         reference_id = references.references[0].document_id
-        referencedocuments_response = semantha.domains(domain).referencedocuments.get(documentids=reference_id, limit=1, offset=0).data[0]
+        referencedocuments_response = semantha.domains(domain).referencedocuments(documentid=reference_id).get()
         #st.write(referencedocuments_response)
-        text = referencedocuments_response.content
+        text = referencedocuments_response.pages[0].contents[0].paragraphs[0].text
         metadata = referencedocuments_response.metadata
         if metadata is not None:
             #st.write(metadata)
@@ -118,6 +122,7 @@ with bumblebee:
                 st.markdown(f'<span style="font-style:italic;">...{video_url[2]}...</span>', unsafe_allow_html=True)
             st.write("and here it is on youtube:")
             st.video(video_url[0], start_time=video_url[1])
+        st.session_state['bumblebee_search'] = None
 
 with cv:
     st.title("Job search with semantha")
@@ -135,34 +140,39 @@ with cv:
         cv_input = st.button('Upload your CV')
         if cv_input:
             st.session_state['cv_input_format'] = 'cv'
+            st.session_state['cv_compare'] = None
     with col2:
         audio_input = st.button('Record audio')
         if audio_input:
             st.session_state['cv_input_format'] = 'audio'
+            st.session_state['cv_compare'] = None
     with col3:
         video_input = st.button('Take a video')
         if video_input:
             st.session_state['cv_input_format'] = 'video'
+            st.session_state['cv_compare'] = None
 
     if st.session_state['cv_input_format'] == 'cv':
         file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
     if st.session_state['cv_input_format'] == 'audio':
-        st.session_state['cv_compare'] = None
         audio_wav = st_audiorec()
-        if audio_wav is not None:
-            with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
-                f.write(audio_wav)
-            r = sr.Recognizer()
-            audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
-            with audio as source:
-                audio = r.record(source)
-                file_text = r.recognize_google(audio, language="de-DE")
-                st.write(file_text)
-            file_pdf = ap.Document()
-            page = file_pdf.pages.add()
-            page.paragraphs.add(ap.text.TextFragment(file_text))
-            file_pdf.save(os.path.join(os.path.dirname(__file__), "application.pdf"))
-        file = open(os.path.join(os.path.dirname(__file__), "application.pdf"), 'rb')
+        with st.spinner('semantha is transcribing what you said!'):
+            if audio_wav is not None:
+                with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
+                    f.write(audio_wav)
+                r = sr.Recognizer()
+                audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
+                with audio as source:
+                    audio = r.record(source)
+                    file_text = r.recognize_google(audio, language="de-DE")
+                    st.write(file_text)
+                #file_pdf = ap.Document()
+                #page = file_pdf.pages.add()
+                #page.paragraphs.add(ap.text.TextFragment(file_text))
+                file = file_text
+                #file_pdf.save(os.path.join(os.path.dirname(__file__), "application.pdf"))
+            #file = open(os.path.join(os.path.dirname(__file__), "application.pdf"), 'rb')
+
     if st.session_state['cv_input_format'] == 'video':
         webrtc_streamer(key="key")
         player = aiortc.Media
@@ -171,10 +181,12 @@ with cv:
         compare = st.button('Compare')
         if compare:
             st.session_state['cv_compare'] = compare
+            st.session_state['cv_all_results'] = None
 
     if st.session_state['cv_compare'] and file is not None:
         st.markdown('***')
         data = get_matches(file)
+        #file.close()
         st.title('Your top 3 positions:')
         medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
         for i in range(0, 3):
