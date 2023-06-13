@@ -8,4 +8,3 @@ font='sans serif'
 
 [server]
 runOnSave=true 
-baseUrlPath="semantha.ki-festival"
