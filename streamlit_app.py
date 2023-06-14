@@ -152,9 +152,23 @@ with cv:
             st.session_state['cv_input_format'] = 'video'
             st.session_state['cv_compare'] = None
 
+    st.markdown('***')
+
     if st.session_state['cv_input_format'] == 'cv':
+        st.title("Upload your CV")
         file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
     if st.session_state['cv_input_format'] == 'audio':
+        st.title("Record audio")
+        languages = {
+            "English": "en-EN",
+            "Deutsch": "de-DE"
+        }
+        col1, col2, space = st.columns((1, 2, 3))
+        with col1:
+            st.write("Language:")
+        with col2:
+            language_selection = st.selectbox("Language", options=("Deutsch", "English"), label_visibility="collapsed")
+        audio_language = languages[language_selection]
         audio_wav = st_audiorec()
         with st.spinner('semantha is transcribing what you said!'):
             if audio_wav is not None:
@@ -164,7 +178,7 @@ with cv:
                 audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
                 with audio as source:
                     audio = r.record(source)
-                    file_text = r.recognize_google(audio, language="de-DE")
+                    file_text = r.recognize_google(audio, language=audio_language)
                     st.write(file_text)
                 #file_pdf = ap.Document()
                 #page = file_pdf.pages.add()
@@ -174,8 +188,10 @@ with cv:
             #file = open(os.path.join(os.path.dirname(__file__), "application.pdf"), 'rb')
 
     if st.session_state['cv_input_format'] == 'video':
-        webrtc_streamer(key="key")
-        player = aiortc.Media
+        st.title("Take a video")
+        st.header("***COMING SOON***")
+        #webrtc_streamer(key="key")
+        #player = aiortc.Media
 
     if st.session_state['cv_input_format'] is not None:
         compare = st.button('Compare')
