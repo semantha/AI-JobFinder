@@ -31,9 +31,10 @@ def get_matches(file):
         matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
     #st.write(matrix_response)
     for reference in matrix_response[0].references:
-        matches_list['job_title'].append(reference.document_name)
-        matches_list['score'].append(reference.similarity)
-        matches_list['documentId'].append(reference.document_id)
+        if reference.similarity > 0:
+            matches_list['job_title'].append(reference.document_name)
+            matches_list['score'].append(reference.similarity)
+            matches_list['documentId'].append(reference.document_id)
     #st.write(matches_list)
     data = pd.DataFrame(matches_list)
     data.sort_values(by='score', inplace=True, ascending=False)
