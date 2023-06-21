@@ -1,3 +1,5 @@
+import base64
+
 import pandas as pd
 import semantha_sdk
 import streamlit as st
@@ -41,8 +43,8 @@ def get_matches(file):
     data['url'] = [None] * len(data['job_title'])
     data['salary'] = [None] * len(data['job_title'])
     data['location'] = [None] * len(data['job_title'])
-    if file == 0:
-        return 0
+    if len(data) == 0:
+        st.error("semantha didn't find any matches, please try a different file")
     else:
         return data
 
@@ -79,6 +81,12 @@ def get_video(string):
             return 0
     else:
         return 0
+
+
+def display_pdf(document):
+    pdf_display = F'<center><iframe src="data:application/pdf;base64,{base64.b64encode(document.read()).decode("utf-8")}" width="600" height="800" type="application/pdf"></iframe></center>'
+    st.markdown(pdf_display, unsafe_allow_html=True)
+    file.seek(0, 0)
 
 
 st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
@@ -157,7 +165,14 @@ with cv:
 
     if st.session_state['cv_input_format'] == 'cv':
         st.title("Upload your CV")
-        file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
+        uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
+        demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+        st.info("Demo file: Demo_CV.pdf")
+        if uploaded_file is None:
+            file = demo_file
+        else:
+            file = uploaded_file
+        display_pdf(file)
     if st.session_state['cv_input_format'] == 'audio':
         st.title("Record audio")
         languages = {
@@ -181,12 +196,7 @@ with cv:
                     audio = r.record(source)
                     file_text = r.recognize_google(audio, language=audio_language)
                     st.write(file_text)
-                #file_pdf = ap.Document()
-                #page = file_pdf.pages.add()
-                #page.paragraphs.add(ap.text.TextFragment(file_text))
                 file = file_text
-                #file_pdf.save(os.path.join(os.path.dirname(__file__), "application.pdf"))
-            #file = open(os.path.join(os.path.dirname(__file__), "application.pdf"), 'rb')
 
     if st.session_state['cv_input_format'] == 'video':
         st.title("Take a video")
@@ -203,54 +213,54 @@ with cv:
     if st.session_state['cv_compare'] and file is not None:
         st.markdown('***')
         data = get_matches(file)
-        #file.close()
-        st.title('Your top 3 positions:')
-        medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
-        for i in range(0, 3):
-            col1, col2 = st.columns((1, 10))
-            data.iloc[i] = get_job_metadata(data.iloc[i])
-            with col1:
-                st.markdown(f'<span style="font-size:50px;">{medals[i]}</span>', unsafe_allow_html=True)
-            with col2:
-                st.markdown(f'<span style="font-size:35px;">{data.iloc[i, 0]}</span>', unsafe_allow_html=True)
-                col2_1, col2_2, col2_3 = st.columns((1, 1, 1))
-                with col2_1:
-                    st.markdown(f'<span style="font-size:15px;">Salary: {data.iloc[i, 4]}</span>', unsafe_allow_html=True)
-                with col2_2:
-                    st.markdown(f'<span style="font-size:15px;">Location: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
-                with col2_3:
-                    st.markdown(f'<span style="font-size:15px;">[Go to job :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
-
-        cv_all_results = st.button('Load all positions')
-        if cv_all_results:
-            st.session_state['cv_all_results'] = cv_all_results
-
-        if st.session_state['cv_all_results']:
-            for i in range(3, len(data)):
+        if data is not None:
+            st.title('Your top 3 positions:')
+            medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
+            for i in range(0, 3):
+                col1, col2 = st.columns((1, 10))
                 data.iloc[i] = get_job_metadata(data.iloc[i])
-            display_data = data[['score', 'job_title', 'salary', 'location', 'url']]
-            gb = GridOptionsBuilder.from_dataframe(display_data)
-            gb.configure_default_column(filterable=True)
-            gb.configure_pagination(paginationAutoPageSize=True, paginationPageSize=10)
-            gb.configure_column("score", header_name='Score', sortable=True, width=75)
-            gb.configure_column("job_title", header_name='Job Title', flex=1)
-            gb.configure_column("salary", header_name='Salary', sortable=True, width=80)
-            gb.configure_column("location", header_name='Location', filter=True, width=100)
-            gb.configure_column("url", header_name='URL', width=100)
-            gridOptions = gb.build()
+                with col1:
+                    st.markdown(f'<span style="font-size:50px;">{medals[i]}</span>', unsafe_allow_html=True)
+                with col2:
+                    st.markdown(f'<span style="font-size:35px;">{data.iloc[i, 0]}</span>', unsafe_allow_html=True)
+                    col2_1, col2_2, col2_3 = st.columns((1, 1, 1))
+                    with col2_1:
+                        st.markdown(f'<span style="font-size:15px;">Salary: {data.iloc[i, 4]}</span>', unsafe_allow_html=True)
+                    with col2_2:
+                        st.markdown(f'<span style="font-size:15px;">Location: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
+                    with col2_3:
+                        st.markdown(f'<span style="font-size:15px;">[Go to job :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
 
-            grid_response = AgGrid(
-                display_data,
-                gridOptions=gridOptions,
-                data_return_mode='AS_INPUT',
-                update_mode='MODEL_CHANGED',
-                fit_columns_on_grid_load=False,
-                enable_enterprise_modules=True,
-                height=350,
-                width='100%',
-                reload_data=True
-            )
+            cv_all_results = st.button('Load all positions')
+            if cv_all_results:
+                st.session_state['cv_all_results'] = cv_all_results
 
-            data = grid_response['data']
-            selected = grid_response['selected_rows']
-            data = pd.DataFrame(selected)
+            if st.session_state['cv_all_results']:
+                for i in range(3, len(data)):
+                    data.iloc[i] = get_job_metadata(data.iloc[i])
+                display_data = data[['score', 'job_title', 'salary', 'location', 'url']]
+                gb = GridOptionsBuilder.from_dataframe(display_data)
+                gb.configure_default_column(filterable=True)
+                gb.configure_pagination(paginationAutoPageSize=True, paginationPageSize=10)
+                gb.configure_column("score", header_name='Score', sortable=True, width=75)
+                gb.configure_column("job_title", header_name='Job Title', flex=1)
+                gb.configure_column("salary", header_name='Salary', sortable=True, width=80)
+                gb.configure_column("location", header_name='Location', filter=True, width=100)
+                gb.configure_column("url", header_name='URL', width=100)
+                gridOptions = gb.build()
+
+                grid_response = AgGrid(
+                    display_data,
+                    gridOptions=gridOptions,
+                    data_return_mode='AS_INPUT',
+                    update_mode='MODEL_CHANGED',
+                    fit_columns_on_grid_load=False,
+                    enable_enterprise_modules=True,
+                    height=350,
+                    width='100%',
+                    reload_data=True
+                )
+
+                data = grid_response['data']
+                selected = grid_response['selected_rows']
+                data = pd.DataFrame(selected)
