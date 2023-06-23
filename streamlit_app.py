@@ -1,5 +1,4 @@
 import base64
-
 import pandas as pd
 import semantha_sdk
 import streamlit as st
@@ -12,13 +11,49 @@ import os
 from streamlit_webrtc import webrtc_streamer
 import aiortc
 import speech_recognition as sr
+import texts
+#import ffmpeg - https://github.com/kkroening/ffmpeg-python
+
+display_texts = texts.display_texts
 
 domain = st.secrets.semantha.domain
 
 semantha = semantha_sdk.login(st.secrets.semantha.server_url, st.secrets.semantha.api_key)
 
 
-@st.cache_data(show_spinner="Finding your perfect job")
+# define session states
+if 'language' not in st.session_state:
+    st.session_state['language'] = "de"
+if 'bumblebee_search' not in st.session_state:
+    st.session_state['bumblebee_search'] = None
+if 'cv_input_format' not in st.session_state:
+    st.session_state['cv_input_format'] = None
+if 'cv_compare' not in st.session_state:
+    st.session_state['cv_compare'] = None
+if 'cv_all_results' not in st.session_state:
+    st.session_state['cv_all_results'] = None
+
+st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
+
+language_options = {
+    "Deutsch": "de",
+    "English": "en"
+}
+
+
+def get_display_text(name):
+    return display_texts[name][0][st.session_state["language"]]
+
+
+col1, col2, space = st.columns((1, 2, 3))
+with col2:
+    language_selection = st.selectbox("Language", options=(list(language_options.keys())), label_visibility="collapsed")
+    st.session_state["language"] = language_options[language_selection]
+with col1:
+    st.write(get_display_text("language_option"))
+
+
+@st.cache_data(show_spinner=get_display_text("compare_spinner"))
 def get_matches(file):
     matches_list = {
         "job_title": [],
@@ -89,56 +124,43 @@ def display_pdf(document):
     file.seek(0, 0)
 
 
-st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
-
-# define session states
-if 'bumblebee_search' not in st.session_state:
-    st.session_state['bumblebee_search'] = None
-if 'cv_input_format' not in st.session_state:
-    st.session_state['cv_input_format'] = None
-if 'cv_compare' not in st.session_state:
-    st.session_state['cv_compare'] = None
-if 'cv_all_results' not in st.session_state:
-    st.session_state['cv_all_results'] = None
-
 bumblebee, cv = st.tabs([":bee: Bumblebee", ":page_with_curl: CV Matching"])
 with bumblebee:
     st.title("semantha Bumblebee")
     st.markdown('***')
-    st.write('Enter a sentence and semantha will search her music library for a line from a song that has similar meaning!')
+    st.write(get_display_text("bumblebee_description"))
     st.markdown('***')
-    user_input = st.text_input("Search:")
+    user_input = st.text_input(f'{get_display_text("search")}:')
     if user_input != '':
-        example = st.selectbox("Or use an example:", ("Es ist sehr heiß hier!", "Where is the party at?"), disabled=True)
+        example = st.selectbox(get_display_text("bumblebee_example"), ("Es ist sehr heiß hier!", "Where is the party at?"), disabled=True)
     else:
-        example = st.selectbox("Or use an example:", ("Es ist sehr heiß hier!", "Where is the party at?"))
+        example = st.selectbox(get_display_text("bumblebee_example"), ("Es ist sehr heiß hier!", "Where is the party at?"))
     if user_input != '':
         search_text = user_input
     else:
         search_text = example
-    search = st.button("Search")
+    search = st.button(get_display_text("search"))
     if search:
         st.session_state['bumblebee_search'] = True
     if st.session_state['bumblebee_search'] and search_text is not None:
         st.markdown('***')
         video_url = get_video(search_text)
         if video_url == 0:
-            st.write("No matches found")
+            st.write(get_display_text("bumblebee_no_matches"))
         else:
-            st.write("semantha has found the line")
+            st.write(get_display_text("bumblebee_line"))
             col1, col2 = st.columns((1, 10))
             with col2:
                 st.markdown(f'<span style="font-style:italic;">...{video_url[2]}...</span>', unsafe_allow_html=True)
-            st.write("and here it is on youtube:")
+            st.write(get_display_text("bumblebee_youtube"))
             st.video(video_url[0], start_time=video_url[1])
         st.session_state['bumblebee_search'] = None
 
 with cv:
-    st.title("Job search with semantha")
+    st.title(get_display_text("cv_title"))
     st.markdown('***')
-    st.write('semantha will find the perfect job for you by using AI to read and understand your CV.')
-    st.write('Don\'t have a CV with you? Simply record a message or take a video describing what you\'re good at and '
-             'semantha will use that!')
+    st.write(get_display_text("cv_description_1"))
+    st.write(get_display_text("cv_description_2"))
     st.markdown('***')
 
     #collect input
@@ -146,17 +168,17 @@ with cv:
     st.title('Input')
     col1, col2, col3 = st.columns((1, 1, 1))
     with col1:
-        cv_input = st.button('Upload your CV')
+        cv_input = st.button(get_display_text("cv_input_cv"))
         if cv_input:
             st.session_state['cv_input_format'] = 'cv'
             st.session_state['cv_compare'] = None
     with col2:
-        audio_input = st.button('Record audio')
+        audio_input = st.button(get_display_text("cv_input_audio"))
         if audio_input:
             st.session_state['cv_input_format'] = 'audio'
             st.session_state['cv_compare'] = None
     with col3:
-        video_input = st.button('Take a video')
+        video_input = st.button(get_display_text("cv_input_video"))
         if video_input:
             st.session_state['cv_input_format'] = 'video'
             st.session_state['cv_compare'] = None
@@ -164,29 +186,27 @@ with cv:
     st.markdown('***')
 
     if st.session_state['cv_input_format'] == 'cv':
-        st.title("Upload your CV")
+        st.title(get_display_text("cv_input_cv"))
         uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
-        demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
-        st.info("Demo file: Demo_CV.pdf")
+        if st.session_state["language"] == "en":
+            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+        if st.session_state["language"] == "de":
+            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+        st.info(get_display_text("cv_demo_cv"))
         if uploaded_file is None:
             file = demo_file
         else:
             file = uploaded_file
         display_pdf(file)
     if st.session_state['cv_input_format'] == 'audio':
-        st.title("Record audio")
+        st.title(get_display_text("cv_input_audio"))
         languages = {
             "English": "en-EN",
             "Deutsch": "de-DE"
         }
-        col1, col2, space = st.columns((1, 2, 3))
-        with col1:
-            st.write("Language:")
-        with col2:
-            language_selection = st.selectbox("Language", options=("Deutsch", "English"), label_visibility="collapsed")
         audio_language = languages[language_selection]
         audio_wav = st_audiorec()
-        with st.spinner('semantha is transcribing what you said!'):
+        with st.spinner(get_display_text("cv_transcribing_spinner")):
             if audio_wav is not None:
                 with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
                     f.write(audio_wav)
@@ -199,13 +219,13 @@ with cv:
                 file = file_text
 
     if st.session_state['cv_input_format'] == 'video':
-        st.title("Take a video")
-        st.header("***COMING SOON***")
+        st.title(get_display_text("cv_input_video"))
+        st.header(get_display_text("cv_video_placeholder"))
         #webrtc_streamer(key="key")
         #player = aiortc.Media
 
     if st.session_state['cv_input_format'] is not None:
-        compare = st.button('Compare')
+        compare = st.button(get_display_text("cv_analyse"))
         if compare:
             st.session_state['cv_compare'] = compare
             st.session_state['cv_all_results'] = None
@@ -214,7 +234,7 @@ with cv:
         st.markdown('***')
         data = get_matches(file)
         if data is not None:
-            st.title('Your top 3 positions:')
+            st.title(get_display_text("cv_top_3"))
             medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
             for i in range(0, 3):
                 col1, col2 = st.columns((1, 10))
@@ -225,13 +245,13 @@ with cv:
                     st.markdown(f'<span style="font-size:35px;">{data.iloc[i, 0]}</span>', unsafe_allow_html=True)
                     col2_1, col2_2, col2_3 = st.columns((1, 1, 1))
                     with col2_1:
-                        st.markdown(f'<span style="font-size:15px;">Salary: {data.iloc[i, 4]}</span>', unsafe_allow_html=True)
+                        st.markdown(f'<span style="font-size:15px;">{get_display_text("cv_salary")}: {data.iloc[i, 4]}</span>', unsafe_allow_html=True)
                     with col2_2:
-                        st.markdown(f'<span style="font-size:15px;">Location: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
+                        st.markdown(f'<span style="font-size:15px;">{get_display_text("cv_location")}: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
                     with col2_3:
-                        st.markdown(f'<span style="font-size:15px;">[Go to job :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
+                        st.markdown(f'<span style="font-size:15px;">[{get_display_text("cv_link")} :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
 
-            cv_all_results = st.button('Load all positions')
+            cv_all_results = st.button(get_display_text("cv_load_all"))
             if cv_all_results:
                 st.session_state['cv_all_results'] = cv_all_results
 
