@@ -191,7 +191,7 @@ with cv:
         if st.session_state["language"] == "en":
             demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
         if st.session_state["language"] == "de":
-            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
         st.info(get_display_text("cv_demo_cv"))
         if uploaded_file is None:
             file = demo_file
