@@ -53,7 +53,7 @@ with col1:
     st.write(get_display_text("language_option"))
 
 
-@st.cache_data(show_spinner=get_display_text("compare_spinner"))
+@st.cache_data(show_spinner=False)
 def get_matches(file):
     matches_list = {
         "job_title": [],
@@ -139,7 +139,9 @@ with bumblebee:
         search_text = user_input
     else:
         search_text = example
-    search = st.button(get_display_text("search"))
+    _, _b, _ = st.columns([1, 1, 1])
+    with _b:
+        search = st.button(get_display_text("search"), type="primary", use_container_width=True)
     if search:
         st.session_state['bumblebee_search'] = True
     if st.session_state['bumblebee_search'] and search_text is not None:
@@ -162,23 +164,24 @@ with cv:
     st.write(get_display_text("cv_description_1"))
     st.write(get_display_text("cv_description_2"))
     st.markdown('***')
+    file = None
 
     #collect input
 
     st.title('Input')
     col1, col2, col3 = st.columns((1, 1, 1))
     with col1:
-        cv_input = st.button(get_display_text("cv_input_cv"))
+        cv_input = st.button(get_display_text("cv_input_cv"), type="primary", use_container_width=True)
         if cv_input:
             st.session_state['cv_input_format'] = 'cv'
             st.session_state['cv_compare'] = None
     with col2:
-        audio_input = st.button(get_display_text("cv_input_audio"))
+        audio_input = st.button(get_display_text("cv_input_audio"), type="primary", use_container_width=True)
         if audio_input:
             st.session_state['cv_input_format'] = 'audio'
             st.session_state['cv_compare'] = None
     with col3:
-        video_input = st.button(get_display_text("cv_input_video"))
+        video_input = st.button(get_display_text("cv_input_video"), type="primary", use_container_width=True)
         if video_input:
             st.session_state['cv_input_format'] = 'video'
             st.session_state['cv_compare'] = None
@@ -211,6 +214,7 @@ with cv:
                 with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
                     f.write(audio_wav)
                 r = sr.Recognizer()
+                #audio = sr.AudioData(audio_wav)
                 audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
                 with audio as source:
                     audio = r.record(source)
@@ -225,14 +229,17 @@ with cv:
         #player = aiortc.Media
 
     if st.session_state['cv_input_format'] is not None:
-        compare = st.button(get_display_text("cv_analyse"))
+        _, _b, _ = st.columns([1, 4, 1])
+        with _b:
+            compare = st.button(get_display_text("cv_analyse"), type="primary", use_container_width=True)
         if compare:
             st.session_state['cv_compare'] = compare
             st.session_state['cv_all_results'] = None
 
     if st.session_state['cv_compare'] and file is not None:
         st.markdown('***')
-        data = get_matches(file)
+        with st.spinner(get_display_text("compare_spinner")):
+            data = get_matches(file)
         if data is not None:
             st.title(get_display_text("cv_top_3"))
             medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
@@ -250,8 +257,9 @@ with cv:
                         st.markdown(f'<span style="font-size:15px;">{get_display_text("cv_location")}: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
                     with col2_3:
                         st.markdown(f'<span style="font-size:15px;">[{get_display_text("cv_link")} :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
-
-            cv_all_results = st.button(get_display_text("cv_load_all"))
+            _, _, _b = st.columns([1, 3, 1])
+            with _b:
+                cv_all_results = st.button(get_display_text("cv_load_all"), type="primary")
             if cv_all_results:
                 st.session_state['cv_all_results'] = cv_all_results
 

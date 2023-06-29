@@ -56,7 +56,7 @@ display_texts = {
     "cv_description_2": [
         {
             "en": "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
-            "de": "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachrict oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
+            "de": "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
         }
     ],
     "cv_input_cv": [
