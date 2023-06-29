@@ -67,11 +67,11 @@ display_texts = {
     ],
     "cv_description": [
         {
-            "en": "semantha will find the perfect job for you by using AI to read and understand your CV. "
-                  "Your CV will be compared to active Job offers from Kaarisma Recruitment to find the perfect matching job!  \n  \n"
+            "en": "semantha will find the your dream job by using AI to read and understand your CV. "
+                  "Your CV will be compared to active Job offers from Kaarisma Recruitment to find best matching jobs!  \n  \n"
                   "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
-            "de": "semantha findet den perfekten Job für dich, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen. "
-                  "Dein Lebenslauf wird gegen den aktuellen Jobangebote bei Kaarisma Recruitment verglichen, um den perfekten passenden Job zu finden!  \n  \n"
+            "de": "semantha findet deinen Traumjob, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen. "
+                  "Dein Lebenslauf wird gegen den aktuellen Jobangebote bei Kaarisma Recruitment verglichen, um den besten passenden Job zu finden!  \n  \n"
                   "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
         }
     ],
@@ -101,11 +101,11 @@ display_texts = {
     ],
     "cv_text_description_1": [
         {
-            "en": "Write a couple of sentences to find your perfect job. You can include:  \n"
+            "en": "Write a couple of sentences to find your dream job. You can include:  \n"
                   "* What you studied  \n"
                   "* Job areas that are of interest to you  \n"
                   "* Any skills you might have that you want to use  \n",
-            "de": "Schreibe ein paar Sätze auf, um deinen perfekten Job zu finden. Du kannst einschließen:  \n"
+            "de": "Schreibe ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst einschließen:  \n"
                   "* Was du studiert hast  \n"
                   "* Berufsfelder, die dich interessieren  \n"
                   "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
@@ -121,11 +121,11 @@ display_texts = {
     ],
     "cv_audio_description_1": [
         {
-            "en": "Record a couple of sentences to find your perfect job. You can include:  \n"
+            "en": "Record a couple of sentences to find your dream job. You can include:  \n"
                   "* What you studied  \n"
                   "* Job areas that are of interest to you  \n"
                   "* Any skills you might have that you want to use  \n",
-            "de": "Nehme ein paar Sätze auf, um deinen perfekten Job zu finden. Du kannst einschließen:  \n"
+            "de": "Nehme ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst einschließen:  \n"
                   "* Was du studiert hast  \n"
                   "* Berufsfelder, die dich interessieren  \n"
                   "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
@@ -207,8 +207,8 @@ display_texts = {
     ],
     "compare_spinner": [
         {
-            "en": "Finding your perfect job",
-            "de": "semantha findet den perfekten Job"
+            "en": "Finding your dream job",
+            "de": "semantha findet den Traumjob"
         }
     ]
 }

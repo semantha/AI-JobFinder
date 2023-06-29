@@ -277,7 +277,7 @@ with cv:
                         st.markdown(f'<span style="font-size:15px;">{get_display_text("cv_location")}: {data.iloc[i, 5]}</span>', unsafe_allow_html=True)
                     with col2_3:
                         st.markdown(f'<span style="font-size:15px;">[{get_display_text("cv_link")} :arrow_forward:]({data.iloc[i, 3]})</span>', unsafe_allow_html=True)
-            _, _, _b = st.columns([1, 3, 1])
+            _, _, _b = st.columns([1, 2, 1])
             with _b:
                 cv_all_results = st.button(get_display_text("cv_load_all"), type="primary")
             if cv_all_results:
