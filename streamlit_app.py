@@ -33,6 +33,8 @@ if 'cv_compare' not in st.session_state:
 if 'cv_all_results' not in st.session_state:
     st.session_state['cv_all_results'] = None
 
+file = None
+
 st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
 
 language_options = {
@@ -128,6 +130,7 @@ bumblebee, cv = st.tabs([":bee: Bumblebee", ":page_with_curl: CV Matching"])
 with bumblebee:
     st.title("semantha Bumblebee")
     st.markdown('***')
+    st.header(get_display_text("how_it_works"))
     st.write(get_display_text("bumblebee_description"))
     st.markdown('***')
     user_input = st.text_input(f'{get_display_text("search")}:')
@@ -159,29 +162,33 @@ with bumblebee:
         st.session_state['bumblebee_search'] = None
 
 with cv:
-    st.title(get_display_text("cv_title"))
+    text, logo = st.columns([1, 1])
+    with text:
+        st.title(get_display_text("cv_title"))
+    with logo:
+        st.image(Image.open(os.path.join(os.path.dirname(__file__), "Kaarisma.png")))
+
     st.markdown('***')
-    st.write(get_display_text("cv_description_1"))
-    st.write(get_display_text("cv_description_2"))
+    st.subheader(get_display_text("how_it_works"))
+    st.write(get_display_text("cv_description"))
     st.markdown('***')
-    file = None
 
     #collect input
 
     st.title('Input')
     col1, col2, col3 = st.columns((1, 1, 1))
     with col1:
-        cv_input = st.button(get_display_text("cv_input_cv"), type="primary", use_container_width=True)
+        cv_input = st.button(get_display_text("cv_cv_title"), type="primary", use_container_width=True)
         if cv_input:
             st.session_state['cv_input_format'] = 'cv'
             st.session_state['cv_compare'] = None
     with col2:
-        audio_input = st.button(get_display_text("cv_input_audio"), type="primary", use_container_width=True)
+        audio_input = st.button(get_display_text("cv_audio_title"), type="primary", use_container_width=True)
         if audio_input:
             st.session_state['cv_input_format'] = 'audio'
             st.session_state['cv_compare'] = None
     with col3:
-        video_input = st.button(get_display_text("cv_input_video"), type="primary", use_container_width=True)
+        video_input = st.button(get_display_text("cv_video_title"), type="primary", use_container_width=True)
         if video_input:
             st.session_state['cv_input_format'] = 'video'
             st.session_state['cv_compare'] = None
@@ -189,7 +196,7 @@ with cv:
     st.markdown('***')
 
     if st.session_state['cv_input_format'] == 'cv':
-        st.title(get_display_text("cv_input_cv"))
+        st.title(get_display_text("cv_cv_title"))
         uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
         if st.session_state["language"] == "en":
             demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
@@ -202,7 +209,10 @@ with cv:
             file = uploaded_file
         display_pdf(file)
     if st.session_state['cv_input_format'] == 'audio':
-        st.title(get_display_text("cv_input_audio"))
+        st.title(get_display_text("cv_audio_title"))
+        st.write(get_display_text("cv_audio_description_1"))
+        st.write(get_display_text("cv_audio_description_2"), unsafe_allow_html=True)
+        st.markdown("***")
         languages = {
             "English": "en-EN",
             "Deutsch": "de-DE"
@@ -214,7 +224,6 @@ with cv:
                 with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
                     f.write(audio_wav)
                 r = sr.Recognizer()
-                #audio = sr.AudioData(audio_wav)
                 audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
                 with audio as source:
                     audio = r.record(source)
@@ -223,7 +232,7 @@ with cv:
                 file = file_text
 
     if st.session_state['cv_input_format'] == 'video':
-        st.title(get_display_text("cv_input_video"))
+        st.title(get_display_text("cv_video_title"))
         st.header(get_display_text("cv_video_placeholder"))
         #webrtc_streamer(key="key")
         #player = aiortc.Media

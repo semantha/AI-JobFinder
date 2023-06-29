@@ -43,35 +43,65 @@ display_texts = {
     ],
     "cv_title": [
         {
-            "en": "Job search with semantha",
-            "de": "Jobsuche mit semantha"
+            "en": "Job search with",
+            "de": "Jobsuche mit"
         }
     ],
-    "cv_description_1": [
+    "kaarisma_link": [
         {
-            "en": "semantha will find the perfect job for you by using AI to read and understand your CV.",
-            "de": "semantha findet den perfekten Job für dich, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen"
+            "en": "Kaarisma website",
+            "de": "Kaarisma Website"
         }
     ],
-    "cv_description_2": [
+    "how_it_works": [
         {
-            "en": "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
-            "de": "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
+            "en": "How it works:",
+            "de": "Wie es funktioniert:"
         }
     ],
-    "cv_input_cv": [
+    "cv_description": [
+        {
+            "en": "semantha will find the perfect job for you by using AI to read and understand your CV. "
+                  "Your CV will be compared to active Job offers from Kaarisma Recruitment to find the perfect matching job!  \n  \n"
+                  "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
+            "de": "semantha findet den perfekten Job für dich, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen. "
+                  "Dein Lebenslauf wird gegen den aktuellen Jobangebote bei Kaarisma Recruitment verglichen, um den perfekten passenden Job zu finden!  \n  \n"
+                  "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
+        }
+    ],
+    "cv_cv_title": [
         {
             "en": "Upload CV",
             "de": "Lebenslauf hochladen"
         }
     ],
-    "cv_input_audio": [
+    "cv_audio_title": [
         {
             "en": "Record audio",
             "de": "Audio aufnehmen"
         }
     ],
-    "cv_input_video": [
+    "cv_audio_description_1": [
+        {
+            "en": "Record a couple of sentences to find your perfect job. You can include:  \n"
+                  "* What you studied  \n"
+                  "* Job areas that are of interest to you  \n"
+                  "* Any skills you might have that you want to use  \n",
+            "de": "Nehme ein paar Sätze auf, um deinen perfekten Job zu finden. Du kannst einschließen:  \n"
+                  "* Was du studiert hast  \n"
+                  "* Berufsfelder, die dich interessieren  \n"
+                  "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
+        }
+    ],
+    "cv_audio_description_2": [
+        {
+            "en": "For example: \"My name is Joe, I studied physics but would like to do something technical and I'm very good with customers\"  \n"
+                  "  \n<i><b>There are some very special jobs on offer, can you find them?</b></i>",
+            "de": "Zum Beispiel: \"Ich heiße Joe, ich habe Physik studiert, würde aber gerne etwas Technisches machen und kann sehr gut mit Kunden umgehen\"  \n"
+                  "  \n<i><b>Es gibt einige ganz besondere Jobs im Angebot, kannst du sie finden?</b></i>"
+        }
+    ],
+    "cv_video_title": [
         {
             "en": "Record video",
             "de": "Video aufnehmen"
