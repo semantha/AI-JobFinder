@@ -5,6 +5,12 @@ display_texts = {
             "de": "Sprache:"
         }
     ],
+    "bumblebee_title": [
+        {
+            "en": "Search through music videos with AI",
+            "de": "Musikvideos mit KI durchsuchen"
+        }
+    ],
     "bumblebee_description": [
         {
             "en": "Enter a sentence and semantha will search her music library for a line from a song that has similar meaning!",
@@ -43,8 +49,8 @@ display_texts = {
     ],
     "cv_title": [
         {
-            "en": "Job search with",
-            "de": "Jobsuche mit"
+            "en": "Find your dream job with AI and",
+            "de": "Finde deinen Traumjob mit KI und"
         }
     ],
     "kaarisma_link": [
@@ -75,10 +81,42 @@ display_texts = {
             "de": "Lebenslauf hochladen"
         }
     ],
+    "cv_text_title": [
+        {
+            "en": "Write text",
+            "de": "Text schreiben"
+        }
+    ],
+    "cv_text_input": [
+        {
+            "en": "Enter text",
+            "de": "Text eingeben"
+        }
+    ],
     "cv_audio_title": [
         {
             "en": "Record audio",
             "de": "Audio aufnehmen"
+        }
+    ],
+    "cv_text_description_1": [
+        {
+            "en": "Write a couple of sentences to find your perfect job. You can include:  \n"
+                  "* What you studied  \n"
+                  "* Job areas that are of interest to you  \n"
+                  "* Any skills you might have that you want to use  \n",
+            "de": "Schreibe ein paar Sätze auf, um deinen perfekten Job zu finden. Du kannst einschließen:  \n"
+                  "* Was du studiert hast  \n"
+                  "* Berufsfelder, die dich interessieren  \n"
+                  "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
+        }
+    ],
+    "cv_text_description_2": [
+        {
+            "en": "For example: \"My name is Joe, I studied physics but would like to do something technical. I'm very good with customers\"  \n"
+                  "  \n<i><b>There are some very special jobs on offer, can you find them?</b></i>",
+            "de": "Zum Beispiel: \"Ich heiße Joe, ich habe Physik studiert, würde aber gerne etwas Technisches machen. Ich kann sehr gut mit Kunden umgehen\"  \n"
+                  "  \n<i><b>Es gibt einige ganz besondere Jobs im Angebot, kannst du sie finden?</b></i>"
         }
     ],
     "cv_audio_description_1": [
@@ -99,6 +137,12 @@ display_texts = {
                   "  \n<i><b>There are some very special jobs on offer, can you find them?</b></i>",
             "de": "Zum Beispiel: \"Ich heiße Joe, ich habe Physik studiert, würde aber gerne etwas Technisches machen und kann sehr gut mit Kunden umgehen\"  \n"
                   "  \n<i><b>Es gibt einige ganz besondere Jobs im Angebot, kannst du sie finden?</b></i>"
+        }
+    ],
+    "cv_audio_output": [
+        {
+            "en": "You said:",
+            "de": "Du hast gesagt:"
         }
     ],
     "cv_video_title": [
@@ -127,8 +171,8 @@ display_texts = {
     ],
     "cv_analyse": [
         {
-            "en": "Analyse",
-            "de": "Analysieren"
+            "en": "Check with semantha",
+            "de": "Mit semantha prüfen"
         }
     ],
     "cv_top_3": [
@@ -157,8 +201,8 @@ display_texts = {
     ],
     "cv_load_all": [
         {
-            "en": "Load all jobs",
-            "de": "Alle Jobs laden"
+            "en": "Show all jobs",
+            "de": "Alle Jobs anzeigen"
         }
     ],
     "compare_spinner": [

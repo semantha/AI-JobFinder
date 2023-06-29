@@ -128,7 +128,7 @@ def display_pdf(document):
 
 bumblebee, cv = st.tabs([":bee: Bumblebee", ":page_with_curl: CV Matching"])
 with bumblebee:
-    st.title("semantha Bumblebee")
+    st.title(get_display_text("bumblebee_title"))
     st.markdown('***')
     st.header(get_display_text("how_it_works"))
     st.write(get_display_text("bumblebee_description"))
@@ -162,7 +162,7 @@ with bumblebee:
         st.session_state['bumblebee_search'] = None
 
 with cv:
-    text, logo = st.columns([1, 1])
+    text, logo = st.columns([3, 2])
     with text:
         st.title(get_display_text("cv_title"))
     with logo:
@@ -176,18 +176,24 @@ with cv:
     #collect input
 
     st.title('Input')
-    col1, col2, col3 = st.columns((1, 1, 1))
+    col1, col2 = st.columns((1, 1))
     with col1:
         cv_input = st.button(get_display_text("cv_cv_title"), type="primary", use_container_width=True)
         if cv_input:
             st.session_state['cv_input_format'] = 'cv'
             st.session_state['cv_compare'] = None
     with col2:
+        text_input = st.button(get_display_text("cv_text_title"), type="primary", use_container_width=True)
+        if text_input:
+            st.session_state['cv_input_format'] = 'text'
+            st.session_state['cv_compare'] = None
+    col1, col2 = st.columns((1, 1))
+    with col1:
         audio_input = st.button(get_display_text("cv_audio_title"), type="primary", use_container_width=True)
         if audio_input:
             st.session_state['cv_input_format'] = 'audio'
             st.session_state['cv_compare'] = None
-    with col3:
+    with col2:
         video_input = st.button(get_display_text("cv_video_title"), type="primary", use_container_width=True)
         if video_input:
             st.session_state['cv_input_format'] = 'video'
@@ -208,6 +214,11 @@ with cv:
         else:
             file = uploaded_file
         display_pdf(file)
+    if st.session_state['cv_input_format'] == 'text':
+        st.title(get_display_text("cv_text_title"))
+        st.write(get_display_text("cv_text_description_1"))
+        st.write(get_display_text("cv_text_description_2"), unsafe_allow_html=True)
+        file = st.text_input(f'{get_display_text("cv_text_input")}:')
     if st.session_state['cv_input_format'] == 'audio':
         st.title(get_display_text("cv_audio_title"))
         st.write(get_display_text("cv_audio_description_1"))
@@ -228,7 +239,7 @@ with cv:
                 with audio as source:
                     audio = r.record(source)
                     file_text = r.recognize_google(audio, language=audio_language)
-                    st.write(file_text)
+                    file_text = st.text_input(get_display_text("cv_audio_output"), file_text)
                 file = file_text
 
     if st.session_state['cv_input_format'] == 'video':
