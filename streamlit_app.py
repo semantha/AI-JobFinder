@@ -12,7 +12,9 @@ from streamlit_webrtc import webrtc_streamer
 import aiortc
 import speech_recognition as sr
 import texts
-#import ffmpeg - https://github.com/kkroening/ffmpeg-python
+import ffmpeg
+import app_deepspeech
+import moviepy.editor as mp
 
 display_texts = texts.display_texts
 
@@ -132,6 +134,24 @@ def display_pdf(document):
     st.markdown(pdf_display, unsafe_allow_html=True)
     file.seek(0, 0)
 
+def transcribe_audio():
+    languages = {
+        "en": "en-EN",
+        "de": "de-DE"
+    }
+    file_text = None
+    audio_language = languages[language_selection]
+    r = sr.Recognizer()
+    audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
+    with audio as source:
+        audio = r.record(source)
+        try:
+            file_text = r.recognize_google(audio, language=audio_language)
+            file_text = st.text_input(get_display_text("cv_audio_output"), file_text)
+        except:
+            st.error(get_display_text("cv_audio_error"))
+    return file_text
+
 
 bumblebee, cv = st.tabs([":bee: Bumblebee", ":page_with_curl: CV Matching"])
 with bumblebee:
@@ -224,39 +244,42 @@ with cv:
         st.title(get_display_text("cv_text_title"))
         st.write(get_display_text("cv_text_description_1"))
         st.write(get_display_text("cv_text_description_2"), unsafe_allow_html=True)
-        file = st.text_input(f'{get_display_text("cv_text_input")}:')
+        text_input = st.text_input(f'{get_display_text("cv_text_input")}:')
+        if text_input is not '':
+            file = text_input
     if st.session_state['cv_input_format'] == 'audio':
         st.title(get_display_text("cv_audio_title"))
         st.write(get_display_text("cv_audio_description_1"))
         st.write(get_display_text("cv_audio_description_2"), unsafe_allow_html=True)
         st.markdown("***")
-        languages = {
-            "English": "en-EN",
-            "Deutsch": "de-DE"
-        }
-        audio_language = languages[language_selection]
         audio_wav = st_audiorec()
-        with st.spinner(get_display_text("cv_transcribing_spinner")):
-            if audio_wav is not None:
-                with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
-                    f.write(audio_wav)
-                r = sr.Recognizer()
-                audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
-                with audio as source:
-                    audio = r.record(source)
-                    try:
-                        file_text = r.recognize_google(audio, language=audio_language)
-                        file_text = st.text_input(get_display_text("cv_audio_output"), file_text)
-                        file = file_text
-                    except:
-                        st.error(get_display_text("cv_audio_error"))
+        if audio_wav is not None:
+            with open(os.path.join(os.path.dirname(__file__), "audio.wav"), mode='wb') as f:
+                f.write(audio_wav)
+            with st.spinner(get_display_text("cv_transcribing_spinner")):
+                file = transcribe_audio()
+                os.remove(os.path.join(os.path.dirname(__file__), "audio.wav"))
 
     if st.session_state['cv_input_format'] == 'video':
         st.title(get_display_text("cv_video_title"))
         st.header(get_display_text("cv_video_placeholder"))
-        webrtc_streamer(key="key")
 
-    if st.session_state['cv_input_format'] is not None:
+        uploaded_video_file = st.file_uploader(" ", type=['mp4'], accept_multiple_files=False)
+        if uploaded_video_file is not None:
+            with st.spinner(get_display_text("cv_transcribing_spinner")):
+                with open(os.path.join(os.path.dirname(__file__), "video.mp4"), "wb") as f:
+                    f.write(uploaded_video_file.getbuffer())
+                    video_file = mp.VideoFileClip(os.path.join(os.path.dirname(__file__), "video.mp4"))
+                    video_file.audio.write_audiofile(os.path.join(os.path.dirname(__file__), "audio.wav"))
+                    video_file.close()
+                file = transcribe_audio()
+                os.remove(os.path.join(os.path.dirname(__file__), "audio.wav"))
+                os.remove(os.path.join(os.path.dirname(__file__), "video.mp4"))
+
+        app_deepspeech.main()
+
+
+    if st.session_state['cv_input_format'] is not None and file is not None:
         _, _b, _ = st.columns([1, 4, 1])
         with _b:
             compare = st.button(get_display_text("cv_analyse"), type="primary", use_container_width=True)
