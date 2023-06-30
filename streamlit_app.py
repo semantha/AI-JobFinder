@@ -12,9 +12,9 @@ from streamlit_webrtc import webrtc_streamer
 import aiortc
 import speech_recognition as sr
 import texts
-import ffmpeg
-import app_deepspeech
-import moviepy.editor as mp
+#import ffmpeg
+#import app_deepspeech
+#import moviepy.editor as mp
 
 display_texts = texts.display_texts
 
