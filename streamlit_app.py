@@ -45,19 +45,22 @@ def get_display_text(name):
     return display_texts[name][0][st.session_state["language"]]
 
 
-logo, _, col1, col2 = st.columns((4, 1, 1, 2))
+st.set_page_config(page_icon=Image.open(os.path.join(os.path.dirname(__file__), "favicon.png")))
+
+qr, logo, col1, col2 = st.columns((3, 8, 2, 2))
 with col2:
     st.write("")
     st.write("")
-    language_selection = st.selectbox("Language", options=(list(language_options.keys())), label_visibility="collapsed")
-    st.session_state["language"] = language_options[language_selection]
+    language_selection = st.selectbox("Language", options=(list(language_options.values())), label_visibility="collapsed")
+    st.session_state["language"] = language_selection
 with col1:
     st.write("")
     st.write("")
     st.write(get_display_text("language_option"))
 with logo:
     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
-
+with qr:
+    st.image(Image.open(os.path.join(os.path.dirname(__file__), "KI-Festival.png")))
 
 @st.cache_data(show_spinner=False)
 def get_matches(file):
@@ -251,8 +254,7 @@ with cv:
     if st.session_state['cv_input_format'] == 'video':
         st.title(get_display_text("cv_video_title"))
         st.header(get_display_text("cv_video_placeholder"))
-        #webrtc_streamer(key="key")
-        #player = aiortc.Media
+        webrtc_streamer(key="key")
 
     if st.session_state['cv_input_format'] is not None:
         _, _b, _ = st.columns([1, 4, 1])
