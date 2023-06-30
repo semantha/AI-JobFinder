@@ -1,2 +1,4 @@
 
 .streamlit/secrets.toml
+models/deepspeech-0.9.3-models.scorer
+models/deepspeech-0.9.3-models.pbmm
