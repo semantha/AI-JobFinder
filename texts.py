@@ -139,6 +139,12 @@ display_texts = {
                   "  \n<i><b>Es gibt einige ganz besondere Jobs im Angebot, kannst du sie finden?</b></i>"
         }
     ],
+    "cv_audio_error": [
+        {
+            "en": "semantha couldn't transcribe your recording, please try again",
+            "de": "semantha konnte deine Aufnahme nicht transkribieren, bitte versuche es nochmal"
+        }
+    ],
     "cv_audio_output": [
         {
             "en": "You said:",

@@ -241,9 +241,12 @@ with cv:
                 audio = sr.AudioFile(os.path.join(os.path.dirname(__file__), 'audio.wav'))
                 with audio as source:
                     audio = r.record(source)
-                    file_text = r.recognize_google(audio, language=audio_language)
-                    file_text = st.text_input(get_display_text("cv_audio_output"), file_text)
-                file = file_text
+                    try:
+                        file_text = r.recognize_google(audio, language=audio_language)
+                        file_text = st.text_input(get_display_text("cv_audio_output"), file_text)
+                        file = file_text
+                    except:
+                        st.error(get_display_text("cv_audio_error"))
 
     if st.session_state['cv_input_format'] == 'video':
         st.title(get_display_text("cv_video_title"))
