@@ -50,7 +50,7 @@ display_texts = {
     "cv_title": [
         {
             "en": "Find your dream job with AI and",
-            "de": "Finde deinen Traumjob mit KI und der"
+            "de": "Finde deinen Traumjob mit KI und"
         }
     ],
     "kaarisma_link": [
