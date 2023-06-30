@@ -42,7 +42,7 @@ class StAudioRec extends StreamlitComponentBase<State> {
     return (
       <span>
         <div>
-          <button id='record' onClick={this.onClick_start}>
+          <button id='record' onClick={this.onClick_start} primaryColor='#4c00a5'>
             Start Recording
           </button>
           <button id='stop' onClick={this.onClick_stop}>

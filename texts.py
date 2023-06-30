@@ -50,7 +50,7 @@ display_texts = {
     "cv_title": [
         {
             "en": "Find your dream job with AI and",
-            "de": "Finde deinen Traumjob mit KI und"
+            "de": "Finde deinen Traumjob mit KI und der"
         }
     ],
     "kaarisma_link": [
@@ -71,8 +71,8 @@ display_texts = {
                   "Your CV will be compared to active Job offers from Kaarisma Recruitment to find best matching jobs!  \n  \n"
                   "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
             "de": "semantha findet deinen Traumjob, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen. "
-                  "Dein Lebenslauf wird gegen den aktuellen Jobangebote bei Kaarisma Recruitment verglichen, um den besten passenden Job zu finden!  \n  \n"
-                  "Keinen Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, indem du beschreibst, was du gut kannst, und semantha wird das verwenden!"
+                  "Dein Lebenslauf wird mit aktuellen Jobangeboten bei Kaarisma Recruitment verglichen, um den besten passenden Job zu finden!  \n  \n"
+                  "Kein Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, in dem du beschreibst, was du gut kannst, und semantha wird dies nutzen!"
         }
     ],
     "cv_cv_title": [
@@ -105,7 +105,7 @@ display_texts = {
                   "* What you studied  \n"
                   "* Job areas that are of interest to you  \n"
                   "* Any skills you might have that you want to use  \n",
-            "de": "Schreibe ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst einschließen:  \n"
+            "de": "Schreibe ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst miteinbeziehen:  \n"
                   "* Was du studiert hast  \n"
                   "* Berufsfelder, die dich interessieren  \n"
                   "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
@@ -125,9 +125,9 @@ display_texts = {
                   "* What you studied  \n"
                   "* Job areas that are of interest to you  \n"
                   "* Any skills you might have that you want to use  \n",
-            "de": "Nehme ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst einschließen:  \n"
+            "de": "Nehme ein paar Sätze auf, um deinen Traumjob zu finden. Du kannst miteinbeziehen:  \n"
                   "* Was du studiert hast  \n"
-                  "* Berufsfelder, die dich interessieren  \n"
+                  "* Welche Berufsfelder, dich interessieren  \n"
                   "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
         }
     ],
@@ -208,7 +208,7 @@ display_texts = {
     "compare_spinner": [
         {
             "en": "Finding your dream job",
-            "de": "semantha findet den Traumjob"
+            "de": "semantha findet deinen Traumjob"
         }
     ]
 }

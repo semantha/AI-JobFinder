@@ -35,8 +35,6 @@ if 'cv_all_results' not in st.session_state:
 
 file = None
 
-st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
-
 language_options = {
     "Deutsch": "de",
     "English": "en"
@@ -47,12 +45,18 @@ def get_display_text(name):
     return display_texts[name][0][st.session_state["language"]]
 
 
-col1, col2, space = st.columns((1, 2, 3))
+logo, _, col1, col2 = st.columns((4, 1, 1, 2))
 with col2:
+    st.write("")
+    st.write("")
     language_selection = st.selectbox("Language", options=(list(language_options.keys())), label_visibility="collapsed")
     st.session_state["language"] = language_options[language_selection]
 with col1:
+    st.write("")
+    st.write("")
     st.write(get_display_text("language_option"))
+with logo:
+    st.image(Image.open(os.path.join(os.path.dirname(__file__), "Semantha-positiv-RGB.png")))
 
 
 @st.cache_data(show_spinner=False)
@@ -162,12 +166,10 @@ with bumblebee:
         st.session_state['bumblebee_search'] = None
 
 with cv:
-    text, logo = st.columns([3, 2])
-    with text:
-        st.title(get_display_text("cv_title"))
+    st.title(get_display_text("cv_title"))
+    _, logo, _ = st.columns([1, 2, 1])
     with logo:
         st.image(Image.open(os.path.join(os.path.dirname(__file__), "Kaarisma.png")))
-        st.write("^ Work in progress")
 
     st.markdown('***')
     st.subheader(get_display_text("how_it_works"))
