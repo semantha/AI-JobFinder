@@ -8,4 +8,3 @@ opencv-python==4.7.0.72
 SpeechRecognition==3.10.0
 pydub==0.25.1
 twilio~=8.1.0
-deepspeech==0.9.3
