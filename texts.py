@@ -99,6 +99,12 @@ display_texts = {
             "de": "Audio aufnehmen"
         }
     ],
+    "cv_phone_input": [
+        {
+            "en": "Works best with your phone:",
+            "de": "Funktioniert am besten mit dem Handy:"
+        }
+    ],
     "cv_text_description_1": [
         {
             "en": "Write a couple of sentences to find your dream job. You can include:  \n"

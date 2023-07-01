@@ -209,6 +209,7 @@ with cv:
         if text_input:
             st.session_state['cv_input_format'] = 'text'
             st.session_state['cv_compare'] = None
+    #st.write(get_display_text("cv_phone_input"))
     col1, col2 = st.columns((1, 1))
     with col1:
         audio_input = st.button(get_display_text("cv_audio_title"), type="primary", use_container_width=True)
@@ -226,16 +227,21 @@ with cv:
     if st.session_state['cv_input_format'] == 'cv':
         st.title(get_display_text("cv_cv_title"))
         uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
-        if st.session_state["language"] == "en":
-            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
-        if st.session_state["language"] == "de":
-            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
-        st.info(get_display_text("cv_demo_cv"))
         if uploaded_file is None:
+            st.info(get_display_text("cv_demo_cv"))
+            if st.session_state["language"] == "en":
+                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-1.png")))
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-2.png")))
+            if st.session_state["language"] == "de":
+                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-1.png")))
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-2.png")))
             file = demo_file
         else:
             file = uploaded_file
-        display_pdf(file)
+            #display_pdf(file)
+
     if st.session_state['cv_input_format'] == 'text':
         st.title(get_display_text("cv_text_title"))
         st.write(get_display_text("cv_text_description_1"))
