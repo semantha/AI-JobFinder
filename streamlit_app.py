@@ -8,13 +8,9 @@ from st_custom_components import st_audiorec
 from PIL import Image
 import io
 import os
-from streamlit_webrtc import webrtc_streamer
-import aiortc
 import speech_recognition as sr
 import texts
-#import ffmpeg
-#import app_deepspeech
-#import moviepy.editor as mp
+import moviepy.editor as mp
 
 display_texts = texts.display_texts
 
@@ -239,7 +235,7 @@ with cv:
             file = demo_file
         else:
             file = uploaded_file
-        display_pdf(file)
+        #display_pdf(file)
     if st.session_state['cv_input_format'] == 'text':
         st.title(get_display_text("cv_text_title"))
         st.write(get_display_text("cv_text_description_1"))
@@ -262,21 +258,22 @@ with cv:
 
     if st.session_state['cv_input_format'] == 'video':
         st.title(get_display_text("cv_video_title"))
-        st.header(get_display_text("cv_video_placeholder"))
+        st.write(get_display_text("cv_video_description_1"))
+        st.write(get_display_text("cv_video_description_2"), unsafe_allow_html=True)
 
-        # uploaded_video_file = st.file_uploader(" ", type=['mp4'], accept_multiple_files=False)
-        # if uploaded_video_file is not None:
-        #     with st.spinner(get_display_text("cv_transcribing_spinner")):
-        #         with open(os.path.join(os.path.dirname(__file__), "video.mp4"), "wb") as f:
-        #             f.write(uploaded_video_file.getbuffer())
-        #             video_file = mp.VideoFileClip(os.path.join(os.path.dirname(__file__), "video.mp4"))
-        #             video_file.audio.write_audiofile(os.path.join(os.path.dirname(__file__), "audio.wav"))
-        #             video_file.close()
-        #         file = transcribe_audio()
-        #         os.remove(os.path.join(os.path.dirname(__file__), "audio.wav"))
-        #         os.remove(os.path.join(os.path.dirname(__file__), "video.mp4"))
-        #
-        # app_deepspeech.main()
+        uploaded_video_file = st.file_uploader(" ", type=['mp4'], accept_multiple_files=False)
+        if uploaded_video_file is not None:
+            with st.spinner(get_display_text("cv_transcribing_spinner")):
+                with open(os.path.join(os.path.dirname(__file__), "video.mp4"), "wb") as f:
+                    f.write(uploaded_video_file.getbuffer())
+                    video_file = mp.VideoFileClip(os.path.join(os.path.dirname(__file__), "video.mp4"))
+                    video_file.audio.write_audiofile(os.path.join(os.path.dirname(__file__), "audio.wav"))
+                    video_file.close()
+                file = transcribe_audio()
+                os.remove(os.path.join(os.path.dirname(__file__), "audio.wav"))
+                os.remove(os.path.join(os.path.dirname(__file__), "video.mp4"))
+
+        #app_deepspeech.main()
 
 
     if st.session_state['cv_input_format'] is not None and file is not None:

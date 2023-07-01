@@ -175,6 +175,26 @@ display_texts = {
             "de": "***IN KÜRZE***"
         }
     ],
+    "cv_video_description_1": [
+        {
+            "en": "Record a video with your phone saying a few sentences to find your dream job. You can include:  \n"
+                  "* What you studied  \n"
+                  "* Job areas that are of interest to you  \n"
+                  "* Any skills you might have that you want to use  \n",
+            "de": "Nehme mit deinem Handy ein Video auf, indem du ein paar Sätze sagst, um deinen Traumjob zu finden. Du kannst miteinbeziehen:  \n"
+                  "* Was du studiert hast  \n"
+                  "* Welche Berufsfelder, dich interessieren  \n"
+                  "* Alle Fähigkeiten, die du vielleicht hast und die du nutzen möchtest  \n"
+        }
+    ],
+    "cv_video_description_2": [
+        {
+            "en": "For example: \"My name is Joe, I studied physics but would like to do something technical and I'm very good with customers\"  \n"
+                  "  \n<i><b>There are some very special jobs on offer, can you find them?</b></i>",
+            "de": "Zum Beispiel: \"Ich heiße Joe, ich habe Physik studiert, würde aber gerne etwas Technisches machen und kann sehr gut mit Kunden umgehen\"  \n"
+                  "  \n<i><b>Es gibt einige ganz besondere Jobs im Angebot, kannst du sie finden?</b></i>"
+        }
+    ],
     "cv_analyse": [
         {
             "en": "Check with semantha",
