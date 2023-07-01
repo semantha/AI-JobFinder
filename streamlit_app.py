@@ -235,7 +235,7 @@ with cv:
             file = demo_file
         else:
             file = uploaded_file
-        #display_pdf(file)
+        display_pdf(file)
     if st.session_state['cv_input_format'] == 'text':
         st.title(get_display_text("cv_text_title"))
         st.write(get_display_text("cv_text_description_1"))
