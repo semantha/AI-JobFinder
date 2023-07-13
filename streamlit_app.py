@@ -229,14 +229,14 @@ with cv:
         uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
         if uploaded_file is None:
             st.info(get_display_text("cv_demo_cv"))
-            if st.session_state["language"] == "en":
-                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
-                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-1.png")))
-                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-2.png")))
-            if st.session_state["language"] == "de":
-                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
-                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-1.png")))
-                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-2.png")))
+            #if st.session_state["language"] == "en":
+            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-1.png")))
+            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-2.png")))
+            # if st.session_state["language"] == "de":
+            #     demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
+            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-1.png")))
+            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-2.png")))
             file = demo_file
         else:
             file = uploaded_file
