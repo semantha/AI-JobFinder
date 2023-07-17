@@ -297,7 +297,7 @@ with cv:
         if data is not None:
             st.title(get_display_text("cv_top_3"))
             medals = [':first_place_medal:', ':second_place_medal:', ':third_place_medal:']
-            for i in range(0, min(3, len(data))):
+            for i in range(0, 3):
                 col1, col2 = st.columns((1, 10))
                 data.iloc[i] = get_job_metadata(data.iloc[i])
                 with col1:

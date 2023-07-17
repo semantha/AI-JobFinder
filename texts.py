@@ -209,8 +209,8 @@ display_texts = {
     ],
     "cv_top_3": [
         {
-            "en": "Your top Jobs:",
-            "de": "Deine Top Jobs:"
+            "en": "Your top 3 Jobs:",
+            "de": "Deine Top 3 Jobs:"
         }
     ],
     "cv_salary": [
