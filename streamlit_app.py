@@ -69,10 +69,10 @@ def get_matches(file):
     }
     if isinstance(file, str):
         text_id = semantha.domains(domain).referencedocuments.post(tags='Applicant', text=file)[0].id
-        matrix_response = semantha.domains(domain).similaritymatrix.post(sourcedocumentids=text_id, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
+        matrix_response = semantha.domains(domain).similaritymatrix.post(sourcedocumentids=text_id, similaritythreshold=0.3, tags='Job_Description', mode='fingerprint')
         semantha.domains(domain).referencedocuments(documentid=text_id).delete()
     else:
-        matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.01, tags='Job_Description', mode='fingerprint')
+        matrix_response = semantha.domains(domain).similaritymatrix.post(file=file, similaritythreshold=0.3, tags='Job_Description', mode='fingerprint')
     #st.write(matrix_response)
     for reference in matrix_response[0].references:
         if reference.similarity > 0:
