@@ -49,8 +49,8 @@ display_texts = {
     ],
     "cv_title": [
         {
-            "en": "<h1 style='text-align: center;'>Find your dream job with</h1>",
-            "de": "<h1 style='text-align: center;'>Finde deinen Traumjob mit</h1>"
+            "en": "<h1 style='text-align: center;'>Find your dream job with AI</h1>",
+            "de": "<h1 style='text-align: center;'>Finde deinen Traumjob mit KI</h1>"
         }
     ],
     "kaarisma_link": [
