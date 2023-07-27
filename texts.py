@@ -68,10 +68,10 @@ display_texts = {
     "cv_description": [
         {
             "en": "semantha will find the your dream job by using AI to read and understand your CV. "
-                  "Your CV will be compared to active Job offers from Kaarisma Recruitment to find best matching jobs!  \n  \n"
+                  "Your CV will be compared to active Job offers to find best matching jobs!  \n  \n"
                   "Don\'t have a CV with you? No problem! Simply record a message or take a video describing what you\'re good at and semantha will use that!",
             "de": "semantha findet deinen Traumjob, indem sie KI einsetzt, um deinen Lebenslauf zu lesen und zu verstehen. "
-                  "Dein Lebenslauf wird mit aktuellen Jobangeboten bei Kaarisma Recruitment verglichen, um den besten passenden Job zu finden!  \n  \n"
+                  "Dein Lebenslauf wird mit aktuellen Jobangeboten verglichen, um den besten passenden Job zu finden!  \n  \n"
                   "Kein Lebenslauf dabei? Kein Problem! Nimm einfach eine Nachricht oder ein Video auf, in dem du beschreibst, was du gut kannst, und semantha wird dies nutzen!"
         }
     ],
