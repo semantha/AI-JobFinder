@@ -185,10 +185,7 @@ with bumblebee:
         st.session_state['bumblebee_search'] = None
 
 with cv:
-    st.title(get_display_text("cv_title"))
-    _, logo, _ = st.columns([1, 2, 1])
-    with logo:
-        st.image(Image.open(os.path.join(os.path.dirname(__file__), "Kaarisma.png")))
+    st.markdown(get_display_text("title"), unsafe_allow_html=True)
 
     st.markdown('***')
     st.subheader(get_display_text("how_it_works"))
