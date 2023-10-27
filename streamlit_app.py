@@ -21,7 +21,7 @@ semantha = semantha_sdk.login(st.secrets.semantha.server_url, st.secrets.semanth
 
 # define session states
 if 'language' not in st.session_state:
-    st.session_state['language'] = "de"
+    st.session_state['language'] = "en"
 if 'bumblebee_search' not in st.session_state:
     st.session_state['bumblebee_search'] = None
 if 'cv_input_format' not in st.session_state:
@@ -226,14 +226,14 @@ with cv:
         uploaded_file = st.file_uploader(" ", type=['pdf', 'docx'], accept_multiple_files=False)
         if uploaded_file is None:
             st.info(get_display_text("cv_demo_cv"))
-            #if st.session_state["language"] == "en":
-            demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
-            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-1.png")))
-            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-2.png")))
-            # if st.session_state["language"] == "de":
-            #     demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
-            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-1.png")))
-            #     st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-2.png")))
+            if st.session_state["language"] == "en":
+                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_CV.pdf"), "rb")
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-1.png")))
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_CV-2.png")))
+            if st.session_state["language"] == "de":
+                demo_file = open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf.pdf"), "rb")
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-1.png")))
+                st.image(Image.open(os.path.join(os.path.dirname(__file__), "Demo_Lebenslauf-2.png")))
             file = demo_file
         else:
             file = uploaded_file
@@ -244,7 +244,7 @@ with cv:
         st.write(get_display_text("cv_text_description_1"))
         st.write(get_display_text("cv_text_description_2"), unsafe_allow_html=True)
         text_input = st.text_input(f'{get_display_text("cv_text_input")}:')
-        if text_input is not '':
+        if text_input != '':
             file = text_input
     if st.session_state['cv_input_format'] == 'audio':
         st.title(get_display_text("cv_audio_title"))
